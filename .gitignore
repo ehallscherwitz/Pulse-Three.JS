@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Unbaked Blender export (local only)
+blenderFiles/
