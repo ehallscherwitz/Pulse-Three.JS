@@ -2,7 +2,11 @@ import { OrbitControls, ScrollControls, useGLTF } from "@react-three/drei";
 import { useControls } from "leva";
 import { useMemo } from "react";
 import { MeshBasicNodeMaterial } from "three/webgpu";
-import { BLENDER_FPS, findCameraPath } from "./cameraPath";
+import {
+  BLENDER_FPS,
+  PORTRAIT_END_PULLBACK,
+  findCameraPath,
+} from "./cameraPath";
 import { ScrollCamera } from "./ScrollCamera";
 
 const modelPath = "/models/pulsethreeJS.glb";
@@ -69,8 +73,16 @@ export const Experience = () => {
   const bakedScene = useBakedScene(gltf.scene);
   const path = useMemo(() => findCameraPath(gltf), [gltf]);
 
-  const { freeCam, pages, damping, smoothing, fps, scrub, scrubFrame } =
-    useControls(
+  const {
+    freeCam,
+    pages,
+    damping,
+    smoothing,
+    fps,
+    scrub,
+    scrubFrame,
+    portraitPullback,
+  } = useControls(
       "Camera path",
       {
         freeCam: { value: !path, label: "free look" },
@@ -85,6 +97,13 @@ export const Experience = () => {
           max: path ? Math.round(path.clip.duration * BLENDER_FPS) : 250,
           step: 1,
           label: "frame",
+        },
+        portraitPullback: {
+          value: PORTRAIT_END_PULLBACK.distance,
+          min: 0,
+          max: 5,
+          step: 0.05,
+          label: "phone end lift",
         },
       },
       [path],
@@ -107,6 +126,7 @@ export const Experience = () => {
             smoothing={smoothing}
             scrub={scrub}
             scrubFrame={scrubFrame}
+            portraitPullback={portraitPullback}
           />
         </ScrollControls>
       ) : (

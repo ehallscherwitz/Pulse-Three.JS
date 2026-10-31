@@ -1,10 +1,20 @@
 import { useScroll } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useMemo, useRef } from "react";
-import { AnimationMixer, MathUtils } from "three/webgpu";
-import { scrollToFrame } from "./cameraPath";
+import { AnimationMixer, MathUtils, Vector3 } from "three/webgpu";
+import { PORTRAIT_END_PULLBACK, scrollToFrame } from "./cameraPath";
 
-export const ScrollCamera = ({ root, path, fps, smoothing, scrub, scrubFrame }) => {
+const backward = new Vector3();
+
+export const ScrollCamera = ({
+  root,
+  path,
+  fps,
+  smoothing,
+  scrub,
+  scrubFrame,
+  portraitPullback,
+}) => {
   const scroll = useScroll();
   const camera = useThree((state) => state.camera);
   const { camera: blenderCamera, clip } = path;
@@ -49,6 +59,17 @@ export const ScrollCamera = ({ root, path, fps, smoothing, scrub, scrubFrame }) 
       camera.quaternion,
       camera.scale,
     );
+
+    if (camera.aspect < 1 && portraitPullback > 0) {
+      const { fullFrame, rampFrames } = PORTRAIT_END_PULLBACK;
+      const ramp = MathUtils.smoothstep(
+        time.current * fps,
+        fullFrame - rampFrames,
+        fullFrame,
+      );
+      backward.set(0, 0, 1).applyQuaternion(camera.quaternion);
+      camera.position.addScaledVector(backward, portraitPullback * ramp);
+    }
   });
 
   return null;

@@ -15,6 +15,14 @@ export const STOPS = [
   { scroll: 1, frame: 250 },
 ];
 
+// On portrait (phone) screens, pull the camera back along its view direction over the final frames
+// so the pages fit the narrower frame. Ramps in over `rampFrames`, reaching full strength at `fullFrame`.
+export const PORTRAIT_END_PULLBACK = {
+  fullFrame: 199,
+  rampFrames: 15,
+  distance: 2,
+};
+
 export const scrollToFrame = (offset, lastFrame) => {
   if (STOPS.length < 2) return offset * lastFrame;
 
