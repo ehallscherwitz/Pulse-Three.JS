@@ -23,5 +23,7 @@ dist-ssr
 *.sln
 *.sw?
 
-# Unbaked Blender export (local only)
+# Raw Blender export (local only); run `npm run optimize` to build the deployed .glb
 blenderFiles/
+public/models/*
+!public/models/*.glb
