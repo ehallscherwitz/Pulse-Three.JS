@@ -20,7 +20,7 @@ export const STOPS = [
 export const PORTRAIT_END_PULLBACK = {
   fullFrame: 199,
   rampFrames: 15,
-  distance: 2,
+  distance: 1.4,
 };
 
 export const scrollToFrame = (offset, lastFrame) => {
