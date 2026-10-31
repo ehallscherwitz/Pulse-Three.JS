@@ -9,7 +9,7 @@ const showDebugPanel = window.location.hash === "#debug";
 function App() {
   const scrollSection = useRef(null);
   const { pages } = useControls("Camera path", {
-    pages: { value: 21.7, min: 1, max: 60, step: 0.1 },
+    pages: { value: 22.8, min: 1, max: 60, step: 0.1 },
   });
 
   return (

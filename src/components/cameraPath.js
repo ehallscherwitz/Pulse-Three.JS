@@ -8,10 +8,10 @@ export const BLENDER_FPS = 24;
 // Scroll offset (0 = top of page, 1 = bottom) -> Blender timeline frame.
 // Repeat a frame across two scroll values to hold the camera there (e.g. pause on an object).
 // Leave empty to map scroll linearly across the whole animation.
-// Frames 0-199 take 199 scroll units, 199-250 take 2 units per frame (102), out of 301 total.
+// Frames 0-184 take 184 scroll units, 184-250 take 2 units per frame (132), out of 316 total.
 export const STOPS = [
   { scroll: 0, frame: 0 },
-  { scroll: 199 / 301, frame: 199 },
+  { scroll: 184 / 316, frame: 184 },
   { scroll: 1, frame: 250 },
 ];
 
