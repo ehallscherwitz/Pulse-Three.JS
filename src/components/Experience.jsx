@@ -1,4 +1,4 @@
-import { OrbitControls, ScrollControls, useGLTF } from "@react-three/drei";
+import { OrbitControls, useGLTF } from "@react-three/drei";
 import { useControls } from "leva";
 import { useMemo } from "react";
 import { MeshBasicNodeMaterial } from "three/webgpu";
@@ -68,15 +68,13 @@ const useBakedScene = (scene) =>
     return scene;
   }, [scene]);
 
-export const Experience = () => {
+export const Experience = ({ scrollSection }) => {
   const gltf = useGLTF(modelPath);
   const bakedScene = useBakedScene(gltf.scene);
   const path = useMemo(() => findCameraPath(gltf), [gltf]);
 
   const {
     freeCam,
-    pages,
-    damping,
     smoothing,
     fps,
     scrub,
@@ -86,9 +84,7 @@ export const Experience = () => {
       "Camera path",
       {
         freeCam: { value: !path, label: "free look" },
-        pages: { value: 21.7, min: 1, max: 60, step: 0.1 },
-        damping: { value: 0.25, min: 0, max: 1, step: 0.01 },
-        smoothing: { value: 4, min: 0.5, max: 20, step: 0.1 },
+        smoothing: { value: 3, min: 0.5, max: 20, step: 0.1 },
         fps: { value: BLENDER_FPS, min: 1, max: 120, step: 1 },
         scrub: false,
         scrubFrame: {
@@ -114,21 +110,16 @@ export const Experience = () => {
   return (
     <>
       {useScrollPath ? (
-        <ScrollControls
-          pages={pages}
-          damping={damping}
-          style={{ scrollbarWidth: "none", overscrollBehavior: "none" }}
-        >
-          <ScrollCamera
-            root={bakedScene}
-            path={path}
-            fps={fps}
-            smoothing={smoothing}
-            scrub={scrub}
-            scrubFrame={scrubFrame}
-            portraitPullback={portraitPullback}
-          />
-        </ScrollControls>
+        <ScrollCamera
+          scrollSection={scrollSection}
+          root={bakedScene}
+          path={path}
+          fps={fps}
+          smoothing={smoothing}
+          scrub={scrub}
+          scrubFrame={scrubFrame}
+          portraitPullback={portraitPullback}
+        />
       ) : (
         <OrbitControls makeDefault target={[-1.4, 4.5, 3.5]} />
       )}

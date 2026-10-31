@@ -1,20 +1,28 @@
-html,
-body {
-  height: 100%;
-  overflow: hidden;
-  overscroll-behavior: none;
+html {
+  overscroll-behavior-y: none;
+  scrollbar-width: none;
 }
 
-#root {
-  width: 100vw;
-  height: 100vh;
-  height: 100dvh;
+html::-webkit-scrollbar {
+  display: none;
 }
 
 body {
   margin: 0;
+  background: #000;
 }
 
-.scroll-container::-webkit-scrollbar {
-  display: none;
+/* `lvh` keeps the canvas size fixed while mobile browser toolbars show and hide. */
+.scroll-section {
+  position: relative;
+  height: calc(var(--pages) * 100vh);
+  height: calc(var(--pages) * 100lvh);
+}
+
+.scroll-sticky {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+  height: 100lvh;
 }

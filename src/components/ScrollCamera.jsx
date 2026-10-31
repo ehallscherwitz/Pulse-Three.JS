@@ -1,4 +1,3 @@
-import { useScroll } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useMemo, useRef } from "react";
 import { AnimationMixer, MathUtils, Vector3 } from "three/webgpu";
@@ -6,7 +5,16 @@ import { PORTRAIT_END_PULLBACK, scrollToFrame } from "./cameraPath";
 
 const backward = new Vector3();
 
+// 0 when the section's top reaches the top of the viewport, 1 when its bottom reaches the bottom.
+const sectionProgress = (section) => {
+  if (!section) return 0;
+  const rect = section.getBoundingClientRect();
+  const scrollable = rect.height - window.innerHeight;
+  return scrollable > 0 ? MathUtils.clamp(-rect.top / scrollable, 0, 1) : 0;
+};
+
 export const ScrollCamera = ({
+  scrollSection,
   root,
   path,
   fps,
@@ -15,7 +23,6 @@ export const ScrollCamera = ({
   scrubFrame,
   portraitPullback,
 }) => {
-  const scroll = useScroll();
   const camera = useThree((state) => state.camera);
   const { camera: blenderCamera, clip } = path;
 
@@ -35,20 +42,19 @@ export const ScrollCamera = ({
     camera.updateProjectionMatrix();
   }, [camera, blenderCamera]);
 
-  useEffect(() => {
-    scroll.el.classList.add("scroll-container");
-  }, [scroll.el]);
-
-  const time = useRef(0);
+  const time = useRef(null);
 
   useFrame((_, delta) => {
     const lastFrame = clip.duration * fps;
-    const frame = scrub ? scrubFrame : scrollToFrame(scroll.offset, lastFrame);
+    const offset = sectionProgress(scrollSection.current);
+    const frame = scrub ? scrubFrame : scrollToFrame(offset, lastFrame);
     const target = MathUtils.clamp(frame / fps, 0, clip.duration);
 
-    time.current = scrub
-      ? target
-      : MathUtils.damp(time.current, target, smoothing, delta);
+    // Snap on the first frame so a restored scroll position doesn't replay the path.
+    time.current =
+      scrub || time.current === null
+        ? target
+        : MathUtils.damp(time.current, target, smoothing, delta);
 
     action.time = time.current;
     mixer.update(0);
